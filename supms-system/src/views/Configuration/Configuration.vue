@@ -1,6 +1,6 @@
 <template>
     <div class="syin">
-        系统信息
+        系统配置
     </div>
 </template>
 <script>

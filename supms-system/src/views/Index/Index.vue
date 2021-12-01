@@ -18,7 +18,10 @@
                 <router-view />
             </el-main>
             <!-- 右侧内容尾部 -->
-            <el-footer>Footer</el-footer>
+            <el-footer>
+                <!-- 右侧内容尾部组件 -->
+                <Bottom></Bottom>
+            </el-footer>
         </el-container>
     </el-container>
 </template>
@@ -28,11 +31,14 @@
 import Nav from '@/components/Nav/Nav.vue';
 // 引入右侧头部组件
 import Top from '@/components/Top/Top.vue';
+// 引入右侧内容尾部组件
+import Bottom from '@/components/Bottom/Bottom.vue'
 
 export default {
-    components: {
+    components: {   // 注册组件
         Nav,
-        Top
+        Top,
+        Bottom
     }
 }
 </script>

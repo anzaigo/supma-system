@@ -95,7 +95,8 @@ export default {
                         username: this.loginForm.username,
                         password: this.loginForm.password
                     };
-                    console.log(params);
+                    // 验证成功后跳到/页面
+                    this.$router.push("/");
                 } else {
                     alert('前端验证失败，不能提交给后端!');
                     return false;
