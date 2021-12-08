@@ -4,7 +4,7 @@
         <el-card class="box-card">
             <!-- 面板头部 -->
             <div slot="header" >
-                <span>系统信息</span>
+                <span>添加账号</span>
             </div>
             <el-form :model="accountaddForm" status-icon :rules="rules" ref="accountaddForm" label-width="100px" class="demo-ruleForm" size=mini>
                 <el-form-item label="账号" prop="username">
@@ -115,7 +115,12 @@ export default {
                          console.log(err);
                      })
                     // 验证成功后跳到-账号管理-页面
-                    // this.$router.push("/accountmanage");
+                    this.$message({
+                        showClose: true,
+                        message: '添加账号成功',
+                        type: 'success'
+                    });
+                    this.$router.push("/accountmanage");
                 } else {
                     return false;
                 }
