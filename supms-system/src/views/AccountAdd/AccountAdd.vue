@@ -53,8 +53,8 @@ export default {
                 return callback(new Error('请输入密码'));
             }else if(!checkSpecificKey(value)){
                 callback(new Error("密码不能包含特殊字符"));
-            }else if(value.length<6 || value.length>12){
-                return callback(new Error('请输入6到12位的密码'));           
+            }else if(value.length<3 || value.length>6){
+                return callback(new Error('请输入3到6位的密码'));           
             }else{
                 if (this.accountaddForm.checkPwd !=='') {
                     this.$refs.accountaddForm.validateField('checkPwd');
@@ -82,7 +82,7 @@ export default {
             rules: {
                 username: [
                     { required: true, message: '请输入账号', trigger: 'change' },
-                    { min: 3, max: 6, message: '账号长度在 3 到 6 位', trigger: 'change' }
+                    { min: 2, max: 6, message: '账号长度在 2 到 6 位', trigger: 'change' }
                 ],
                 password: [
                     { required: true, validator: validatePass, trigger: 'change'}

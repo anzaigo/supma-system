@@ -24,6 +24,9 @@
     </div>
 </template>
 <script>
+// 引入qs
+import qs from 'qs';
+
 export default {
     data() {
         // 定义密码特殊符号验证规则
@@ -42,8 +45,8 @@ export default {
                 return callback(new Error('请输入密码'));
             }else if(!checkSpecificKey(value)){
                 callback(new Error("密码不能包含特殊字符"));
-            }else if(value.length<6 || value.length>12){
-                return callback(new Error('请输入6到12位的密码'));           
+            }else if(value.length<3 || value.length>6){
+                return callback(new Error('请输入3到6位的密码'));           
             }else{
                 if (this.loginForm.checkPwd !=='') {
                     this.$refs.loginForm.validateField('checkPwd');
@@ -70,7 +73,7 @@ export default {
             rules: {
                 username: [
                     { required: true, message: '请输入账号', trigger: 'change' },
-                    { min: 3, max: 6, message: '账号长度在 3 到 6 位', trigger: 'change' }
+                    { min: 2, max: 6, message: '账号长度在 2 到 6 位', trigger: 'change' }
                 ],
                 password: [
                     { required: true, validator: validatePass, trigger: 'change'}
@@ -86,17 +89,44 @@ export default {
         };
     },
     methods: {
+        // 点击登录按钮 触发这个函数
         submitForm(formName) {
+            // 获取表单组件 调用验证方法
             this.$refs[formName].validate((valid) => {
+                // 如果所有验证通过 valid就是true
                 if (valid) {
-                    alert('前端提交成功!');
                     // 收集账号和密码
                     let params = {
                         username: this.loginForm.username,
                         password: this.loginForm.password
                     };
-                    // 验证成功后跳到/页面
-                    this.$router.push("/");
+                    // 发送请求 把参数发给后端（把用户名和密码发给后端 验证是否存在这个账号）
+                    this.axios.post('http://127.0.0.1:1999/login/checklogin',qs.stringify(params))
+                     .then(response => {
+                        //  接收后端返回的数据
+                        let {err_code, reason, token } = response.data;
+                        // 判断是否成功
+                        if (err_code === 0) {
+                            // 把token存储到浏览器的本地存储中
+                            window.localStorage.setItem('token', token);
+                            // 把用户名存入本地仓库
+                            // window.localStorage.setItem('username', username);
+
+                            // 弹出成功提示
+                            this.$message({
+                                message: reason,
+                                type: 'success'
+                            })
+                            // 跳转到后端首页
+                            this.$router.push('/');
+                        } else {
+                            // 弹出失败提示
+                            this.$message.error(reason);
+                        }
+                     })
+                     .catch(err => {
+                         console.log(err);
+                     })
                 } else {
                     alert('前端验证失败，不能提交给后端!');
                     return false;

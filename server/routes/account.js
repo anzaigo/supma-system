@@ -108,4 +108,55 @@ router.post('/accounteditsave',(req, res) => {
   })
 })
 
+// 批量删除请求路由     /batchdelete
+router.get('/batchdelete',(req, res) => {
+  // 接收前端发过来的要删除账号的id
+  let {selectedId} = req.query;
+  // 构建批量删除sql语句
+  const sqlStr = `delete from account where id in (${selectedId})`;
+  // 执行sql语句
+  connection.query(sqlStr,(err, data) =>{
+    if (err) throw err;
+    // 根据删除结果判断 成功就返回成功的数据对象 否则 就返回失败的数据对象
+    if (data.affectedRows > 0) {
+      // 返回成功的数据给前端
+      res.send({"error_code": 0, "reason":"删除账号成功"});
+    } else {
+      // 返回失败的数据给前端
+      res.send({"error_code": 0, "reason":"删除账号失败，请刷新网页"});
+    }
+  })
+})
+
+// 按分页显示账号列表的路由    /accountlistbypage
+router.get('/accountlistbypage',(req, res) => {
+  // 接收前端发来的当前页码 和 每页数据条数
+  let {currentPage, pageSize} = req.query;
+  // 默认值
+  pageSize = pageSize ? pageSize : 2;
+  currentPage = currentPage ? currentPage : 1;
+  // 构建sql语句（查询所有数据 按照时间排序）
+  let sqlStr = `select * from account order by ctime desc`;
+  console.log(sqlStr);
+  // 执行sql语句
+  connection.query(sqlStr,(err, data) => {
+    if (err) throw err;
+    // 计算数据总条数
+    let total = data.length;
+    // 分页条件（跳过多少页）
+    let n = (currentPage - 1) * pageSize;
+    // 拼接分页的sql语句
+    sqlStr += ` limit ${n}, ${pageSize}`;
+    // 执行sql语句 （查询对应页码的数据）
+    connection.query(sqlStr,(err, data) => {
+      if (err) throw err;
+      // 把数据返回给前端 两个数据 数据总条数 total 和 对应页码的数据 data
+      res.send({
+        total,
+        data
+      })
+    })
+  })
+})
+
 module.exports = router;
