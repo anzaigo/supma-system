@@ -1,7 +1,5 @@
 // 引入vue
 import Vue from 'vue'
-// 引入axios
-import axios from 'axios'
 // 引入element-ui样式和组件
 import ElementUI from 'element-ui';    //组件
 import 'element-ui/lib/theme-chalk/index.css';  //样式
@@ -14,12 +12,13 @@ import App from './App.vue'
 import router from './router'
 // 引入公用样式
 import '@/style/common.less';
-
+// 引入request.js（封装的axios）
+import req from '@/api/request';
 
 // 注册/使用emementui
 Vue.use(ElementUI);
-// 把axios挂在Vue的原型上 所有vue的实例对象共享
-Vue.prototype.axios = axios;
+// 把axios (request) 挂在Vue的原型上 所有vue的实例对象共享
+Vue.prototype.req = req;
 
 // 全局路由守卫 拦截所有路由
 router.beforeEach((to, from , next) => {

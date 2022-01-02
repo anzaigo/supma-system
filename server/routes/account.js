@@ -3,6 +3,14 @@
  */
 var express = require('express');
 var router = express.Router();
+
+// 引入express-jwt  用于验证token
+const expressJwt = require('express-jwt');
+// 引入jwt
+const jwt = require('jsonwebtoken');
+// 定义密钥
+const secretKey = 'itsource';
+
 // 引入连接数据库模块
 const connection = require('./connect');
 
@@ -10,8 +18,26 @@ const connection = require('./connect');
 router.all('*', (req, res, next) => {
   // 设置响应头 解决跨域(目前最主流的方式)
   res.header('Access-Control-Allow-Origin', '*');
+  // 允许的请求头
+  res.header("Access-Control-Allow-Headers", "authorization");
   next();
 })
+
+// 使用expressJwt模块验证token
+router.use(expressJwt({
+  secret: secretKey,
+  algorithms: ['HS256']   // 更新算法
+}));
+
+// 拦截器
+router.use( (err, req, res, next) => {
+  //当token验证失败时会抛出如下错误
+  if (err.name === 'UnauthorizedError') {   
+      //这个需要根据自己的业务逻辑来处理
+      res.status(401).send('无效的token 未授权...');
+  }
+});
+
 
 /* 
   添加账号的路由 /accountadd
@@ -137,7 +163,6 @@ router.get('/accountlistbypage',(req, res) => {
   currentPage = currentPage ? currentPage : 1;
   // 构建sql语句（查询所有数据 按照时间排序）
   let sqlStr = `select * from account order by ctime desc`;
-  console.log(sqlStr);
   // 执行sql语句
   connection.query(sqlStr,(err, data) => {
     if (err) throw err;
@@ -157,6 +182,47 @@ router.get('/accountlistbypage',(req, res) => {
       })
     })
   })
+})
+
+// 验证旧密码是否正确的路由     /checkOldPwd
+router.get('/checkOldPwd',(req, res) => {
+  // 接收前端发来的用户名和旧密码
+  let {oldPassword, username} = req.query;
+  // 构造查询sql语句
+  const sqlStr = `select * from account where password='${oldPassword}' and username='${username}'`;
+  //执行sql语句
+  connection.query(sqlStr,(err, data) => {
+    if (err) throw err;
+    if(data.length) {
+      res.send({"error_code": 0, "reason":"旧密码正确!"})
+    } else {
+      res.send({"error_code": 1, "reason":"旧密码错误!"})
+    }
+  })
+})
+
+// 修改并保存密码的路由     /savenewpwd
+router.post('/savenewpwd',(req, res) => {
+  // 接收前端发来的数据
+  let {username, oldPassword, newPassword} = req.body;
+  // 构造sql语句
+  const sqlStr = `update account set password='${newPassword}' where username='${username}' and password='${oldPassword}'`;
+  // 执行sql语句
+  connection.query(sqlStr, (err, data) => {
+    if (err) throw err;
+    // 判断是否成功
+    if (data.affectedRows > 0) {
+      res.send({"error_code": 0, "reason": "密码修改成功!请重新登录!"});
+    } else {
+      res.send({"error_code": 1, "reason": "密码修改失败！"})
+    }
+  })
+})
+
+// 个人中心的路由        /accountinfo
+router.get('/accountinfo', (req, res) => {
+  // 个人信息 响应给前端
+  res.send(req.user);      // req.user是token封装信息的一个属性
 })
 
 module.exports = router;

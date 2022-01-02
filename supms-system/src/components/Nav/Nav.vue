@@ -11,95 +11,20 @@
         unique-opened 
         router
         >
-            <!-- 分类管理 -->
-            <el-submenu index="1">
+            <!-- 导航 -->
+            <el-submenu :index="(index + 1) + ''" v-for="(nav, index) in premissionMenu" :key="index">
                 <template slot="title">
-                    <i class="el-icon-set-up"></i>
-                    <span>分类管理</span>
+                    <i :class="nav.icon"></i>
+                    <span>{{ nav.title }}</span>
                 </template>
-                <el-menu-item-group>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 商品管理 -->
-            <el-submenu index="2">
-                <template slot="title">
-                    <i class="el-icon-shopping-bag-1"></i>
-                    <span>商品管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="2-1">选项1</el-menu-item>
-                    <el-menu-item index="2-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 进货管理 -->
-            <el-submenu index="3">
-                <template slot="title">
-                    <i class="el-icon-sell"></i>
-                    <span>进货管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 出货管理 -->
-            <el-submenu index="4">
-                <template slot="title">
-                    <i class="el-icon-sold-out"></i>
-                    <span>出货管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 统计管理 -->
-            <el-submenu index="5">
-                <template slot="title">
-                    <i class="el-icon-notebook-2"></i>
-                    <span>统计管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 账号管理 -->
-            <el-submenu index="6">
-                <template slot="title">
-                    <i class="el-icon-edit-outline"></i>
-                    <span>账号管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="/accountmanage">账号管理</el-menu-item>
-                    <el-menu-item index="/accountadd">添加账号</el-menu-item>
-                    <el-menu-item index="1-3">密码修改</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 会员管理 -->
-            <el-submenu index="7">
-                <template slot="title">
-                    <i class="el-icon-s-custom"></i>
-                    <span>会员管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- 系统管理 -->
-            <el-submenu index="8">
-                <template slot="title">
-                    <i class="el-icon-setting"></i>
-                    <span>系统管理</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item index="/">系统信息</el-menu-item>
-                    <el-menu-item index="/configuration">系统配置</el-menu-item>
-                    <el-menu-item index="1-2">权限管理</el-menu-item>
-                    <el-menu-item index="1-2">添加管理组</el-menu-item>
+                <el-menu-item-group v-if="nav.children && nav.children.length" >
+                    <el-menu-item 
+                        :key="index" 
+                         v-for="(subNav, index) in nav.children" 
+                        :index="subNav.path"
+                    >
+                        {{ subNav.subTitle }}
+                    </el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
         </el-menu>
@@ -107,12 +32,184 @@
 </template>
 <script>
 export default {
+    data () {
+        return {
+            // 菜单（一般是后端做了权限控制 直接返回当前登录用户所具备的权限菜单 前端直接渲染）
+            navMenu: [
+                // 分类管理
+                {
+                    title: "分类管理",                  // 导航菜单标题
+                    icon: "el-icon-set-up",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "选项1",          // 子菜单标题
+                            path: "1-1"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "选项2",
+                            path: "1-2"
+                        }
+                    ]
+                },
+                // 商品管理
+                {
+                    title: "商品管理",                  // 导航菜单标题
+                    icon: "el-icon-shopping-bag-1",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "商品管理",          // 子菜单标题
+                            path: "/goodsmanage"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "添加商品",
+                            path: "/goodsadd"
+                        }
+                    ]
+                },
+                // 进货管理
+                {
+                    title: "进货管理",                  // 导航菜单标题
+                    icon: "el-icon-sell",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "选项1",          // 子菜单标题
+                            path: "1-1"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "选项2",
+                            path: "1-2"
+                        }
+                    ]
+                },
+                // 出货管理
+                {
+                    title: "出货管理",                  // 导航菜单标题
+                    icon: "el-icon-sold-out",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "选项1",          // 子菜单标题
+                            path: "1-1"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "选项2",
+                            path: "1-2"
+                        }
+                    ]
+                },
+                // 统计管理
+                {
+                    title: "统计管理",                  // 导航菜单标题
+                    icon: "el-icon-notebook-2",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "销售统计",          // 子菜单标题
+                            path: "/salesstatistics"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "进货统计",
+                            path: "1-2"
+                        }
+                    ]
+                },
+                // 账号管理
+                {
+                    title: "账号管理",                  // 导航菜单标题
+                    icon: "el-icon-edit-outline",            // 图标
+                    roles: ["admin"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "账号管理",          // 子菜单标题
+                            path: "/accountmanage"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "添加账号",
+                            path: "/accountadd"
+                        },
+                        {
+                            subTitle: "密码修改",
+                            path: "/modifypassword"
+                        }
+                    ]
+                },
+                // 会员管理
+                {
+                    title: "会员管理",                  // 导航菜单标题
+                    icon: "el-icon-s-custom",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "选项1",          // 子菜单标题
+                            path: "1-1"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "选项2",
+                            path: "1-2"
+                        }
+                    ]
+                },
+                // 系统管理
+                {
+                    title: "系统管理",                  // 导航菜单标题
+                    icon: "el-icon-setting",            // 图标
+                    roles: ["admin", "editor"],        // 用户组权限
+                    children: [                        // 导航子菜单
+                        {
+                            subTitle: "系统信息",          // 子菜单标题
+                            path: "/"                 // 子菜单路径
+                        },
+                        {
+                            subTitle: "系统配置",
+                            path: "/configuration"
+                        },
+                        {
+                            subTitle: "权限管理",
+                            path: "1-2"
+                        },
+                        {
+                            subTitle: "添加管理组",
+                            path: "1-3"
+                        }
+                    ]
+                }
+            ],
+            // 过滤出来的菜单
+            premissionMenu: []
+        }
+    },
+    created () {
+        // 过滤菜单
+        this.filterMenu();
+    },
     methods: {
         handleOpen(key, keyPath) {
             console.log(key, keyPath);
         },
         handleClose(key, keyPath) {
             console.log(key, keyPath);
+        },
+        // 过滤菜单
+        filterMenu () {
+            // 获取本地存在中的roles数组
+            let roles = JSON.parse(window.localStorage.getItem("roles"));
+            // 定义一个过滤后的权限菜单
+            let tempMenu = [];
+            // 循环导航
+            this.navMenu.forEach(nav => {
+            // 循环roles权限数组
+            roles.forEach(role => {
+                // 判断每一项是否包含 role (admin)
+                if (nav.roles.includes(role)) {
+                tempMenu.push(nav);
+            }
+        });
+      });
+      // 最终过滤出来的菜单 赋值给权限菜单   
+      this.premissionMenu = tempMenu; 
         }
     }
 }

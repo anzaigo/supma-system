@@ -18,28 +18,43 @@ const routes = [
   // home首页
   {
     path: '/', 
-    name: 'index',  
     component: () => import('../views/Index/Index'),  // 引入后端首页组件
     children: [
       {
         path: '',
-        name: 'home',
         component: () => import('../views/Home/Home')
       },
       {
         path: '/configuration',       // 系统配置
-        name: 'configuration',
         component: () => import('../views/Configuration/Configuration')
       },
       {
         path: '/accountadd',          // 添加账号
-        name: '/accountadd',
         component: () => import('../views/AccountAdd/AccountAdd')
       },
       {
         path: '/accountmanage',       // 账号管理
-        name: '/accountmanage',
         component: () => import('../views/AccountManage/AccountManage')
+      },
+      {
+        path: '/modifypassword',      // 修改密码
+        component: () => import('../views/ModifyPassword/ModifyPassword')
+      },
+      {
+        path: '/goodsadd',             // 添加商品
+        component: () => import('../views/GootsAdd/GootsAdd')
+      },
+      {
+        path: '/goodsmanage',          // 商品管理
+        component: () => import('../views/GoodsManage/GoodsManage')
+      },
+      {
+        path: '/personal',             // 个人中心
+        component: () => import('../views/Personal/Personal')
+      },
+      {
+        path: '/salesstatistics',       // 销售统计
+        component: () => import('../views/SalesStatistics/SalesStatistics.vue')
       }
     ]
   }

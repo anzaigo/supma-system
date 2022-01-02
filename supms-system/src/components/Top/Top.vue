@@ -11,19 +11,19 @@
                 <div class="header-right">
                 <el-col :span="18">
                     欢迎你！
-                    <el-dropdown>
+                    <el-dropdown @command="handleCommand">
                         <span class="el-dropdown-link">
                             <span>{{ username }}</span><i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>个人中心</el-dropdown-item>
-                            <el-dropdown-item>退出</el-dropdown-item>
+                            <el-dropdown-item command="personal">个人中心</el-dropdown-item>
+                            <el-dropdown-item command="signout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-col>
                 <el-col :span="6">
                     <div class="userAvatar">
-                        <img src="" alt="">
+                        <img :src="avatarUrl" width="100%" height="100%">
                     </div>
                 </el-col>
                 </div>
@@ -35,8 +35,47 @@
 export default {
     data () {
         return {
-            username: "admin"
+            username: "",
+            avatarUrl:""
         }
+    },
+    methods: {
+        handleCommand(command) {
+            if (command === "signout"){
+                // 清除token
+                window.localStorage.removeItem('token');
+                // 弹出提示
+                this.$message({
+                    type: 'success',
+                    message: '一定要回来哦，哥哥！'
+                })
+                // 0.5秒后跳到登录页
+                setTimeout(() => {
+                    this.$router.push('/login')
+                }, 200)
+            } else if (command === 'personal') {
+                // 跳转到个人中心
+                this.$router.push('/personal');
+            }
+        },
+        // 获取头像路劲
+        getAvatar () {
+            this.req.get('/login/getavatar')
+                .then(response => {
+                    console.log(response);
+                    let data = response.data;
+                    this.avatarUrl = 'http://127.0.0.1:1999' + data[data.length - 1].imgUrl;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        },
+    },
+    created () {
+        // 显示当前登录的用户名
+        this.username = window.localStorage.getItem('username')
+        // 获取头像
+        this.getAvatar();
     }
 }
 </script>
@@ -58,6 +97,7 @@ export default {
                         }
                     }
                 }
+                // 用户头像
                 .userAvatar{
                     width: 50px;
                     height: 50px;
@@ -68,5 +108,9 @@ export default {
                 }
             }
         }
+    }
+    // 用户账号下拉菜单
+    .el-dropdown-menu{
+        top: 40px!important;
     }
 </style>

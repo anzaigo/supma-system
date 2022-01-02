@@ -110,8 +110,7 @@
 <script>
 // 引用moment
 const moment = require('moment');
-// 引入qs
-const qs = require('qs');
+
 export default {
     data () {
         return {
@@ -135,7 +134,7 @@ export default {
             selectedAccount: [],          // 保存被多选删除数据的id
             currentPage: 1,               // 当前页-默认值
             total: 0,                     // 数据总条数-默认值
-            pageSize: 2                  // 每页显示的数据条数-默认值
+            pageSize: 4                  // 每页显示的数据条数-默认值
         }
     },
     // 生命周期的钩子函数 created 自动触发 vue组件实例对象创建完成 dom还没有绑定 这个函数里面适合发送ajax请求 获取数据
@@ -149,16 +148,16 @@ export default {
             // 搜集当前页码和每页数据条数
             let currentPage = this.currentPage;
             let pageSize = this.pageSize;
+            // 参数对象
+            let params = {
+                currentPage,
+                pageSize
+            }
             // 发送ajax请求，把每页数据发送给后端
-            this.axios.get('http://127.0.0.1:1999/account/accountlistbypage',{
-                params: {
-                    currentPage,
-                    pageSize
-                }
-            })
+            this.req.get('/account/accountlistbypage',params)
              .then(response => {
                 // 接收后端返回的数据总条数 total 和 对应页码的数据 data
-                let {total, data} = response.data;
+                let {total, data} = response;
                 // 赋值给对应的变量
                 this.total = total;
                 this.accountTableData = data;
@@ -174,26 +173,15 @@ export default {
                  console.log(err);
              })
         },
-  /*       // 获取所有用户账号数据
-        getAccountList () {
-            this.axios.get("http://127.0.0.1:1999/account/accountlist")
-             .then(response => {
-                 // 把后端返回的账号数据 赋值给用户账号表格数据accountTableData
-                 this.accountTableData = response.data;
-             })
-             .catch(err => {
-                 console.log(err);
-             })
-        }, */
         // 编辑功能的实现（回填表单）
         handleEdit (id) {
             // 保存被点击的id
             this.editId = id;
             // 发送请求，发送id给后端
-            this.axios.get(`http://127.0.0.1:1999/account/accountedit?id=${id}`)
+            this.req.get(`/account/accountedit`, {id})
              .then(response => {
                  //  接收后端返回的数据，后端返回的数据即使只有一条 也是数组
-                let result = response.data[0];
+                let result = response[0];
                 // 回填表单
                 this.editForm.username = result.username;
                 this.editForm.usergroup = result.usergroup;
@@ -213,10 +201,10 @@ export default {
                 usergroup: this.editForm.usergroup
             }
             // 发送ajax请求 把新数据和原来的id一起发送给后端
-            this.axios.post("http://127.0.0.1:1999/account/accounteditsave",qs.stringify(params))
+            this.req.post("/account/accounteditsave", params)
              .then(response => {
                  // 接收错误码和提示信息
-                let { error_code, reason } = response.data;
+                let { error_code, reason } = response;
                 if (error_code === 0) {
                     // 弹出成功的提示
                     this.$message({
@@ -245,10 +233,10 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                this.axios.get(`http://127.0.0.1:1999/account/accountdel?id=${id}`)
+                this.req.get(`/account/accountdel`, {id})
                     .then(response => {
                     // 接收后端返回的错误码 和 提示信息
-                    let {error_code, reason} = response.data;
+                    let {error_code, reason} = response;
                     // 判断是否删除成功
                     if (error_code === 0) {
                         // 弹出删除成功的信息
@@ -309,14 +297,10 @@ export default {
             })
              .then(() => {
                 // 发送ajax 把需要删除账号数据的id发送给后端
-                this.axios.get(`http://127.0.0.1:1999/account/batchdelete`,{
-                    params: {
-                        selectedId
-                    }
-                })
+                this.req.get(`/account/batchdelete`, {selectedId})
                  .then(response => {
                     //  接收后端返回的数据
-                    let {error_code, reason} = response.data;
+                    let {error_code, reason} = response;
                     // 判断是否删除成功
                     if (error_code === 0) {
                         // 删除成功，弹出成功提示框

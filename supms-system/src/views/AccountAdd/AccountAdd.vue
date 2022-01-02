@@ -107,20 +107,26 @@ export default {
                         userGroup: this.accountaddForm.userGroup
                     };
                     // 使用axios发送数据给后端
-                    this.axios.post('http://127.0.0.1:1999/account/accountadd',qs.stringify(params))
+                    this.req.post('/account/accountadd', params)
                      .then(response => {
-                         console.log(response.data);
+                         // 接收后端返回的数据
+                         let {error_code, reason} = response;
+                        //  判断
+                        if(error_code === 0) {
+                            // 验证成功后跳到-账号管理-页面
+                            this.$message({
+                                showClose: true,
+                                message: '添加账号成功',
+                                type: 'success'
+                            });
+                            this.$router.push("/accountmanage");
+                        }else{
+                            this.$message.error(reason);
+                        }
                      })
                      .catch(err => {
                          console.log(err);
                      })
-                    // 验证成功后跳到-账号管理-页面
-                    this.$message({
-                        showClose: true,
-                        message: '添加账号成功',
-                        type: 'success'
-                    });
-                    this.$router.push("/accountmanage");
                 } else {
                     return false;
                 }

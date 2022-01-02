@@ -24,8 +24,6 @@
     </div>
 </template>
 <script>
-// 引入qs
-import qs from 'qs';
 
 export default {
     data() {
@@ -101,16 +99,18 @@ export default {
                         password: this.loginForm.password
                     };
                     // 发送请求 把参数发给后端（把用户名和密码发给后端 验证是否存在这个账号）
-                    this.axios.post('http://127.0.0.1:1999/login/checklogin',qs.stringify(params))
+                    this.req.post('/login/checklogin',params)
                      .then(response => {
                         //  接收后端返回的数据
-                        let {err_code, reason, token } = response.data;
+                        let {err_code, reason, token, username, roles} = response;
                         // 判断是否成功
                         if (err_code === 0) {
                             // 把token存储到浏览器的本地存储中
                             window.localStorage.setItem('token', token);
                             // 把用户名存入本地仓库
-                            // window.localStorage.setItem('username', username);
+                            window.localStorage.setItem('username', username);
+                            // 把当前登录用户的角色存入本地存储
+                            window.localStorage.setItem('roles', JSON.stringify(roles));
 
                             // 弹出成功提示
                             this.$message({
