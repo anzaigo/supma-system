@@ -225,4 +225,5 @@ router.get('/accountinfo', (req, res) => {
   res.send(req.user);      // req.user是token封装信息的一个属性
 })
 
+
 module.exports = router;

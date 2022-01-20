@@ -43,12 +43,8 @@ export default {
                     roles: ["admin", "editor"],        // 用户组权限
                     children: [                        // 导航子菜单
                         {
-                            subTitle: "选项1",          // 子菜单标题
-                            path: "1-1"                 // 子菜单路径
-                        },
-                        {
-                            subTitle: "选项2",
-                            path: "1-2"
+                            subTitle: "分类管理",          // 子菜单标题
+                            path: "/classifymanage"                 // 子菜单路径
                         }
                     ]
                 },
@@ -75,12 +71,12 @@ export default {
                     roles: ["admin", "editor"],        // 用户组权限
                     children: [                        // 导航子菜单
                         {
-                            subTitle: "选项1",          // 子菜单标题
-                            path: "1-1"                 // 子菜单路径
+                            subTitle: "库存管理",          // 子菜单标题
+                            path: "/stockmanage"                 // 子菜单路径
                         },
                         {
-                            subTitle: "选项2",
-                            path: "1-2"
+                            subTitle: "添加库存",
+                            path: "/stockadd"
                         }
                     ]
                 },
@@ -91,12 +87,16 @@ export default {
                     roles: ["admin", "editor"],        // 用户组权限
                     children: [                        // 导航子菜单
                         {
-                            subTitle: "选项1",          // 子菜单标题
-                            path: "1-1"                 // 子菜单路径
+                            subTitle: "销售列表",          // 子菜单标题
+                            path: "/saleslist"                 // 子菜单路径
                         },
                         {
-                            subTitle: "选项2",
-                            path: "1-2"
+                            subTitle: "商品出库",
+                            path: "/goodscheckout"
+                        },
+                        {
+                            subTitle: "商品退货",
+                            path: "/goodsrejected"
                         }
                     ]
                 },
@@ -143,12 +143,12 @@ export default {
                     roles: ["admin", "editor"],        // 用户组权限
                     children: [                        // 导航子菜单
                         {
-                            subTitle: "选项1",          // 子菜单标题
-                            path: "1-1"                 // 子菜单路径
+                            subTitle: "会员管理",          // 子菜单标题
+                            path: "/membermanage"                 // 子菜单路径
                         },
                         {
-                            subTitle: "选项2",
-                            path: "1-2"
+                            subTitle: "添加会员",
+                            path: "/memberadd"
                         }
                     ]
                 },

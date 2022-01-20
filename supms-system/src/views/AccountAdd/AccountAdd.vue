@@ -32,9 +32,6 @@
 </template>
 <script>
 
-// 引入qs库
-import qs from 'qs';
-
 export default {
     data () {
         // 定义密码特殊符号验证规则

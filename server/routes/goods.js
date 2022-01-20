@@ -90,8 +90,6 @@ router.get('/goodslistbypage', (req, res) => {
       sqlStr += ` and (goodsName like "%${keyWord}%" or barCode like "%${keyWord}%")`
     }
 
-    console.log('查询语句:', sqlStr)
-
     // 再次按照 查询的条件查询数据 重新计算数据的总条数
     connection.query(sqlStr, (err, data) => {
       if (err) throw err;
@@ -118,5 +116,34 @@ router.get('/goodslistbypage', (req, res) => {
   })
 })
 
+// 编辑分类的路由           /classification
+router.get('/classification', (req, res) => {
+  // 接收前端发来的数据
+  let {id} = req.query;
+  // 构造sql语句
+  const sqlStr = `select * from goods where id = ${id}`;
+  // 执行sql语句
+  connection.query(sqlStr, (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  })
+})
+// 编辑保存分类的路由       /goodseditsave
+router.post('/goodseditsave', (req, res) => {
+  // 接收前端发来的数据
+  let {editId, cateName} = req.body;
+  // 构造sql语句
+  const sqlStr = `update goods set cateName='${cateName}' where id=${editId}`;
+  // 执行sql语句
+  connection.query(sqlStr, (err, data) => {
+    if (err) throw err;
+    // 受影响行数大于0 就是修改成功
+    if (data.affectedRows > 0) {
+      res.send({"error_code": 0, "reason": "修改分类成功"});
+    } else {
+      res.send({"error_code": 1, "reason": "修改分类失败"});
+    }
+  })
+})
 
 module.exports = router;

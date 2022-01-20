@@ -54,10 +54,44 @@ const routes = [
       },
       {
         path: '/salesstatistics',       // 销售统计
-        component: () => import('../views/SalesStatistics/SalesStatistics.vue')
+        component: () => import('../views/SalesStatistics/SalesStatistics')
+      },
+      {
+        path: '/classifymanage',
+            path: '/classifymanage',          // 分类管理
+            component: () => import('../views/ClassifyManage/ClassifyManage')
+
+      },
+      {
+        path: '/stockadd',              // 添加库存
+        component: () => import('../views/StockAdd/StockAdd')
+      },
+      {
+        path: '/stockmanage',            // 库存管理
+        component: () => import('../views/StockManage/StockManage')
+      },
+      {
+        path: '/memberadd',           // 添加会员
+        component: () => import('../views/MemberAdd/MemberAdd')
+      },
+      {
+        path: '/membermanage',          // 会员管理
+        component: () => import('../views/MemberManage/MemberManage')
+      },
+      {
+        path: '/saleslist',             // 销售列表
+        component: () => import('../views/SalesList/SalesList')
+      },
+      {
+        path: '/goodscheckout',        // 商品出库
+        component: () => import('../views/GoodsCheckout/GoodsCheckout')
+      },
+      {
+        path: '/goodsrejected',            // 商品退货
+        component: () => import('../views/GoodsRejected/GoodsRejected')
       }
     ]
-  }
+  },
 ]
 
 const router = new VueRouter({
